@@ -278,7 +278,7 @@
     selectionStart = selectionEnd = 0;
 }
 //clearFormatting
- function clearFormatting() {
+    function clearFormatting() {
     const textarea = document.getElementById('originalText');
     const formatted = textarea.value;
 
@@ -288,21 +288,6 @@
             reverseMap[styled] = plain;
         }
     }
-
-    let plainText = '';
-    for (const char of formatted) {
-        // Reverse mapped chars (e.g., 𝗮 → a)
-        plainText += reverseMap[char] || char;
-    }
-
-    // Remove combining underline (U+0332) and strikethrough (U+0336)
-    plainText = plainText.normalize("NFD").replace(/[\u0332\u0336]/g, "");
-
-    textarea.value = plainText;
-    document.getElementById('formattedText').textContent = plainText;
-    updateCharCount();
-}
-
 
     // Also remove combining characters for underline and strikethrough
     let plainText = '';
@@ -316,7 +301,7 @@
     textarea.value = plainText;
     document.getElementById('formattedText').textContent = plainText;
     updateCharCount();
-
+}
 
         // Clear all text
         function clearText() {
