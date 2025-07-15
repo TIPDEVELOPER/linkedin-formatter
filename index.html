@@ -156,7 +156,15 @@
                             <i class="fas fa-code"></i>
                             <span class="tooltiptext">Monospace</span>
                         </button>
-                        <!-- Clear -->
+                        
+<!-- Clear Formatting -->
+<button onclick="clearFormatting()" class="format-btn tooltip bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-2 px-4 rounded-lg">
+    <i class="fas fa-eraser"></i>
+    <span class="tooltiptext">Clear Formatting</span>
+</button>
+
+
+<!-- Clear -->
                         <button onclick="clearText()" class="format-btn tooltip bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-2 px-4 rounded-lg">
                             <i class="fas fa-trash-alt"></i>
                             <span class="tooltiptext">Clear All</span>
@@ -280,35 +288,65 @@
 
         // Format selected text based on style
         function formatText(style) {
-            const textarea = document.getElementById('originalText');
-            let text = textarea.value;
-            
-            // If no selection, format the whole text
-            if (selectionStart === selectionEnd) {
-                selectionStart = 0;
-                selectionEnd = text.length;
-            }
-            
-            const selectedText = text.substring(selectionStart, selectionEnd);
-            let formattedText = '';
-            
-            for (let i = 0; i < selectedText.length; i++) {
-                const char = selectedText[i];
-                formattedText += styleMaps[style][char] || char;
-            }
-            
-            // Update the text with formatted selection
-            textarea.value = text.substring(0, selectionStart) + 
-                            formattedText + 
-                            text.substring(selectionEnd);
-            
-            // Update the formatted preview
-            document.getElementById('formattedText').textContent = textarea.value;
-            updateCharCount();
-            
-            // Reset selection
-            selectionStart = selectionEnd = 0;
+    const textarea = document.getElementById('originalText');
+    let text = textarea.value;
+
+    if (selectionStart === selectionEnd) {
+        selectionStart = 0;
+        selectionEnd = text.length;
+    }
+
+    const selectedText = text.substring(selectionStart, selectionEnd);
+    let formattedText = '';
+
+    const styleMap = styleMaps[style];
+    const reverseMap = {};
+    for (const [plain, styled] of Object.entries(styleMap)) {
+        reverseMap[styled] = plain;
+    }
+
+    const isFormatted = [...selectedText].every(char =>
+        reverseMap[char] || !(char in styleMap) && !(char.toLowerCase() in styleMap)
+    );
+
+    if (isFormatted) {
+        for (let char of selectedText) {
+            formattedText += reverseMap[char] || char;
         }
+    } else {
+        for (let char of selectedText) {
+            formattedText += styleMap[char] || char;
+        }
+    }
+
+    const newText = text.substring(0, selectionStart) + formattedText + text.substring(selectionEnd);
+    textarea.value = newText;
+    document.getElementById('formattedText').textContent = newText;
+    updateCharCount();
+    selectionStart = selectionEnd = 0;
+}
+//clearFormatting
+    function clearFormatting() {
+    const textarea = document.getElementById('originalText');
+    const formatted = textarea.value;
+
+    const reverseMap = {};
+    for (const style of Object.values(styleMaps)) {
+        for (const [plain, styled] of Object.entries(style)) {
+            reverseMap[styled] = plain;
+        }
+    }
+
+    let plainText = '';
+    for (const char of formatted) {
+        // Some stylings like underline use multiple Unicode codepoints
+        plainText += reverseMap[char] || char;
+    }
+
+    textarea.value = plainText;
+    document.getElementById('formattedText').textContent = plainText;
+    updateCharCount();
+}
 
         // Clear all text
         function clearText() {
