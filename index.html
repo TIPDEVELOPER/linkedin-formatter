@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Text Formatter | Enhance Your Posts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        #formattedText {
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.5;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        #copyNotification {
+            animation: fadeInOut 2s ease-in-out;
+            opacity: 0;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .format-btn {
+            transition: all 0.2s ease;
+        }
+        .format-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .format-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">LinkedIn Text Formatter</h1>
+            <p class="text-gray-600">Enhance your LinkedIn posts with bold, italics, and special characters</p>
+        </header>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-3">
+                            <label for="originalText" class="block text-sm font-medium text-gray-700">Your Text</label>
+                            <span id="charCount" class="text-xs text-gray-500">0 characters</span>
+                        </div>
+                        <textarea id="originalText" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="Type or paste your LinkedIn post here..."></textarea>
+                    </div>
+                    
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-3">
+                            <label for="formattedText" class="block text-sm font-medium text-gray-700">Preview</label>
+                            <button id="copyBtn" class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 transition flex items-center gap-1">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div class="w-full border border-gray-300 rounded-lg overflow-hidden bg-white">
+                            <div class="p-4">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-gray-300 mr-3 overflow-hidden">
+                                        <img src="https://i.pinimg.com/736x/7a/1f/82/7a1f8260db525ffe67c8398360f186b5.jpg" alt="John Wick" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-800">John Wick</div>
+                                        <div class="text-xs text-gray-500">Retired Hitman • 1st</div>
+                                    </div>
+                                </div>
+                                <div id="formattedText" class="text-gray-800 whitespace-pre-wrap"></div>
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between text-gray-500 text-sm">
+                                    <span><i class="far fa-thumbs-up mr-1"></i> Like</span>
+                                    <span><i class="far fa-comment mr-1"></i> Comment</span>
+                                    <span><i class="fas fa-share mr-1"></i> Share</span>
+                                    <span><i class="far fa-paper-plane"></i> Send</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <!-- Bold -->
+                        <button onclick="formatText('bold')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-bold"></i>
+                            <span class="tooltiptext">Bold Text</span>
+                        </button>
+                        <!-- Italic -->
+                        <button onclick="formatText('italic')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-italic"></i>
+                            <span class="tooltiptext">Italic Text</span>
+                        </button>
+                        <!-- Underline -->
+                        <button onclick="formatText('underline')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-underline"></i>
+                            <span class="tooltiptext">Underline Text</span>
+                        </button>
+                        <!-- Strikethrough -->
+                        <button onclick="formatText('strikethrough')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-strikethrough"></i>
+                            <span class="tooltiptext">Strikethrough</span>
+                        </button>
+                        <!-- Small Caps -->
+                        <button onclick="formatText('smallcaps')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-text-height"></i>
+                            <span class="tooltiptext">Small Caps</span>
+                        </button>
+                        <!-- Double Struck -->
+                        <button onclick="formatText('doublestruck')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-square"></i>
+                            <span class="tooltiptext">Double Struck</span>
+                        </button>
+                        <!-- Script -->
+                        <button onclick="formatText('script')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-pen-fancy"></i>
+                            <span class="tooltiptext">Script Text</span>
+                        </button>
+                        <!-- Fraktur -->
+                        <button onclick="formatText('fraktur')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-feather-alt"></i>
+                            <span class="tooltiptext">Fraktur Text</span>
+                        </button>
+                        <!-- Monospace -->
+                        <button onclick="formatText('monospace')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-code"></i>
+                            <span class="tooltiptext">Monospace</span>
+                        </button>
+                        <!-- Clear -->
+                        <button onclick="clearText()" class="format-btn tooltip bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-trash-alt"></i>
+                            <span class="tooltiptext">Clear All</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="copyNotification" class="mt-4 text-center text-green-600 font-medium"></div>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">How to Use</h2>
+            <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                <li>Type or paste your text in the left box</li>
+                <li>Click any formatting button to transform your text</li>
+                <li>Copy the formatted text from the right box</li>
+                <li>Paste it directly into LinkedIn (or any other platform)</li>
+            </ol>
+            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                <h3 class="font-bold text-blue-800 mb-2">Pro Tip:</h3>
+                <p class="text-blue-700">You can combine multiple formats for unique effects! Try bold + italic for emphasis.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-12 py-6 text-center text-gray-500 text-sm">
+        <p>LinkedIn Text Formatter - Make your posts stand out with special formatting</p>
+    </footer>
+
+    <script>
+        // Character maps for different text styles
+        const styleMaps = {
+            bold: {
+                a: '𝗮', b: '𝗯', c: '𝗰', d: '𝗱', e: '𝗲', f: '𝗳', g: '𝗴', h: '𝗵', i: '𝗶', j: '𝗷', 
+                k: '𝗸', l: '𝗹', m: '𝗺', n: '𝗻', o: '𝗼', p: '𝗽', q: '𝗾', r: '𝗿', s: '𝘀', t: '𝘁', 
+                u: '𝘂', v: '𝘃', w: '𝘄', x: '𝘅', y: '𝘆', z: '𝘇',
+                A: '𝗔', B: '𝗕', C: '𝗖', D: '𝗗', E: '𝗘', F: '𝗙', G: '𝗚', H: '𝗛', I: '𝗜', J: '𝗝', 
+                K: '𝗞', L: '𝗟', M: '𝗠', N: '𝗡', O: '𝗢', P: '𝗣', Q: '𝗤', R: '𝗥', S: '𝗦', T: '𝗧', 
+                U: '𝗨', V: '𝗩', W: '𝗪', X: '𝗫', Y: '𝗬', Z: '𝗭',
+                0: '𝟬', 1: '𝟭', 2: '𝟮', 3: '𝟯', 4: '𝟰', 5: '𝟱', 6: '𝟲', 7: '𝟳', 8: '𝟴', 9: '𝟵'
+            },
+            italic: {
+                a: '𝘢', b: '𝘣', c: '𝘤', d: '𝘥', e: '𝘦', f: '𝘧', g: '𝘨', h: '𝘩', i: '𝘪', j: '𝘫', 
+                k: '𝘬', l: '𝘭', m: '𝘮', n: '𝘯', o: '𝘰', p: '𝘱', q: '𝘲', r: '𝘳', s: '𝘴', t: '𝘵', 
+                u: '𝘶', v: '𝘷', w: '𝘸', x: '𝘹', y: '𝘺', z: '𝘻',
+                A: '𝘈', B: '𝘉', C: '𝘊', D: '𝘋', E: '𝘌', F: '𝘍', G: '𝘎', H: '𝘏', I: '𝘐', J: '𝘑', 
+                K: '𝘒', L: '𝘓', M: '𝘔', N: '𝘕', O: '𝘖', P: '𝘗', Q: '𝘘', R: '𝘙', S: '𝘚', T: '𝘛', 
+                U: '𝘜', V: '𝘝', W: '𝘞', X: '𝘟', Y: '𝘠', Z: '𝘡'
+            },
+            underline: {
+                a: 'a̲', b: 'b̲', c: 'c̲', d: 'd̲', e: 'e̲', f: 'f̲', g: 'g̲', h: 'h̲', i: 'i̲', j: 'j̲', 
+                k: 'k̲', l: 'l̲', m: 'm̲', n: 'n̲', o: 'o̲', p: 'p̲', q: 'q̲', r: 'r̲', s: 's̲', t: 't̲', 
+                u: 'u̲', v: 'v̲', w: 'w̲', x: 'x̲', y: 'y̲', z: 'z̲',
+                A: 'A̲', B: 'B̲', C: 'C̲', D: 'D̲', E: 'E̲', F: 'F̲', G: 'G̲', H: 'H̲', I: 'I̲', J: 'J̲', 
+                K: 'K̲', L: 'L̲', M: 'M̲', N: 'N̲', O: 'O̲', P: 'P̲', Q: 'Q̲', R: 'R̲', S: 'S̲', T: 'T̲', 
+                U: 'U̲', V: 'V̲', W: 'W̲', X: 'X̲', Y: 'Y̲', Z: 'Z̲',
+                0: '0̲', 1: '1̲', 2: '2̲', 3: '3̲', 4: '4̲', 5: '5̲', 6: '6̲', 7: '7̲', 8: '8̲', 9: '9̲'
+            },
+            strikethrough: {
+                a: 'a̶', b: 'b̶', c: 'c̶', d: 'd̶', e: 'e̶', f: 'f̶', g: 'g̶', h: 'h̶', i: 'i̶', j: 'j̶', 
+                k: 'k̶', l: 'l̶', m: 'm̶', n: 'n̶', o: 'o̶', p: 'p̶', q: 'q̶', r: 'r̶', s: 's̶', t: 't̶', 
+                u: 'u̶', v: 'v̶', w: 'w̶', x: 'x̶', y: 'y̶', z: 'z̶',
+                A: 'A̶', B: 'B̶', C: 'C̶', D: 'D̶', E: 'E̶', F: 'F̶', G: 'G̶', H: 'H̶', I: 'I̶', J: 'J̶', 
+                K: 'K̶', L: 'L̶', M: 'M̶', N: 'N̶', O: 'O̶', P: 'P̶', Q: 'Q̶', R: 'R̶', S: 'S̶', T: 'T̶', 
+                U: 'U̶', V: 'V̶', W: 'W̶', X: 'X̶', Y: 'Y̶', Z: 'Z̶',
+                0: '0̶', 1: '1̶', 2: '2̶', 3: '3̶', 4: '4̶', 5: '5̶', 6: '6̶', 7: '7̶', 8: '8̶', 9: '9̶'
+            },
+            smallcaps: {
+                a: 'ᴀ', b: 'ʙ', c: 'ᴄ', d: 'ᴅ', e: 'ᴇ', f: 'ғ', g: 'ɢ', h: 'ʜ', i: 'ɪ', j: 'ᴊ', 
+                k: 'ᴋ', l: 'ʟ', m: 'ᴍ', n: 'ɴ', o: 'ᴏ', p: 'ᴘ', q: 'ǫ', r: 'ʀ', s: 's', t: 'ᴛ', 
+                u: 'ᴜ', v: 'ᴠ', w: 'ᴡ', x: 'x', y: 'ʏ', z: 'ᴢ',
+                A: 'ᴀ', B: 'ʙ', C: 'ᴄ', D: 'ᴅ', E: 'ᴇ', F: 'ғ', G: 'ɢ', H: 'ʜ', I: 'ɪ', J: 'ᴊ', 
+                K: 'ᴋ', L: 'ʟ', M: 'ᴍ', N: 'ɴ', O: 'ᴏ', P: 'ᴘ', Q: 'ǫ', R: 'ʀ', S: 's', T: 'ᴛ', 
+                U: 'ᴜ', V: 'ᴠ', W: 'ᴡ', X: 'x', Y: 'ʏ', Z: 'ᴢ'
+            },
+            doublestruck: {
+                a: '𝕒', b: '𝕓', c: '𝕔', d: '𝕕', e: '𝕖', f: '𝕗', g: '𝕘', h: '𝕙', i: '𝕚', j: '𝕛', 
+                k: '𝕜', l: '𝕝', m: '𝕞', n: '𝕟', o: '𝕠', p: '𝕡', q: '𝕢', r: '𝕣', s: '𝕤', t: '𝕥', 
+                u: '𝕦', v: '𝕧', w: '𝕨', x: '𝕩', y: '𝕪', z: '𝕫',
+                A: '𝔸', B: '𝔹', C: 'ℂ', D: '𝔻', E: '𝔼', F: '𝔽', G: '𝔾', H: 'ℍ', I: '𝕀', J: '𝕁', 
+                K: '𝕂', L: '𝕃', M: '𝕄', N: 'ℕ', O: '𝕆', P: 'ℙ', Q: 'ℚ', R: 'ℝ', S: '𝕊', T: '𝕋', 
+                U: '𝕌', V: '𝕍', W: '𝕎', X: '𝕏', Y: '𝕐', Z: 'ℤ',
+                0: '𝟘', 1: '𝟙', 2: '𝟚', 3: '𝟛', 4: '𝟜', 5: '𝟝', 6: '𝟞', 7: '𝟟', 8: '𝟠', 9: '𝟡'
+            },
+            script: {
+                a: '𝒶', b: '𝒷', c: '𝒸', d: '𝒹', e: '𝑒', f: '𝒻', g: '𝑔', h: '𝒽', i: '𝒾', j: '𝒿', 
+                k: '𝓀', l: '𝓁', m: '𝓂', n: '𝓃', o: '𝑜', p: '𝓅', q: '𝓆', r: '𝓇', s: '𝓈', t: '𝓉', 
+                u: '𝓊', v: '𝓋', w: '𝓌', x: '𝓍', y: '𝓎', z: '𝓏',
+                A: '𝒜', B: 'ℬ', C: '𝒞', D: '𝒟', E: 'ℰ', F: 'ℱ', G: '𝒢', H: 'ℋ', I: 'ℐ', J: '𝒥', 
+                K: '𝒦', L: 'ℒ', M: 'ℳ', N: '𝒩', O: '𝒪', P: '𝒫', Q: '𝒬', R: 'ℛ', S: '𝒮', T: '𝒯', 
+                U: '𝒰', V: '𝒱', W: '𝒲', X: '𝒳', Y: '𝒴', Z: '𝒵'
+            },
+            fraktur: {
+                a: '𝔞', b: '𝔟', c: '𝔠', d: '𝔡', e: '𝔢', f: '𝔣', g: '𝔤', h: '𝔥', i: '𝔦', j: '𝔧', 
+                k: '𝔨', l: '𝔩', m: '𝔪', n: '𝔫', o: '𝔬', p: '𝔭', q: '𝔮', r: '𝔯', s: '𝔰', t: '𝔱', 
+                u: '𝔲', v: '𝔳', w: '𝔴', x: '𝔵', y: '𝔶', z: '𝔷',
+                A: '𝔄', B: '𝔅', C: 'ℭ', D: '𝔇', E: '𝔈', F: '𝔉', G: '𝔊', H: 'ℌ', I: 'ℑ', J: '𝔍', 
+                K: '𝔎', L: '𝔏', M: '𝔐', N: '𝔑', O: '𝔒', P: '𝔓', Q: '𝔔', R: 'ℜ', S: '𝔖', T: '𝔗', 
+                U: '𝔘', V: '𝔙', W: '𝔚', X: '𝔛', Y: '𝔜', Z: 'ℨ'
+            },
+            monospace: {
+                a: '𝚊', b: '𝚋', c: '𝚌', d: '𝚍', e: '𝚎', f: '𝚏', g: '𝚐', h: '𝚑', i: '𝚒', j: '𝚓', 
+                k: '𝚔', l: '𝚕', m: '𝚖', n: '𝚗', o: '𝚘', p: '𝚙', q: '𝚚', r: '𝚛', s: '𝚜', t: '𝚝', 
+                u: '𝚞', v: '𝚟', w: '𝚠', x: '𝚡', y: '𝚢', z: '𝚣',
+                A: '𝙰', B: '𝙱', C: '𝙲', D: '𝙳', E: '𝙴', F: '𝙵', G: '𝙶', H: '𝙷', I: '𝙸', J: '𝙹', 
+                K: '𝙺', L: '𝙻', M: '𝙼', N: '𝙽', O: '𝙾', P: '𝙿', Q: '𝚀', R: '𝚁', S: '𝚂', T: '𝚃', 
+                U: '𝚄', V: '𝚅', W: '𝚆', X: '𝚇', Y: '𝚈', Z: '𝚉',
+                0: '𝟶', 1: '𝟷', 2: '𝟸', 3: '𝟹', 4: '𝟺', 5: '𝟻', 6: '𝟼', 7: '𝟽', 8: '𝟾', 9: '𝟿'
+            }
+        };
+
+        // Track text selection
+        let selectionStart = 0;
+        let selectionEnd = 0;
+        
+        document.getElementById('originalText').addEventListener('select', function() {
+            selectionStart = this.selectionStart;
+            selectionEnd = this.selectionEnd;
+        });
+
+        // Format selected text based on style
+        function formatText(style) {
+            const textarea = document.getElementById('originalText');
+            let text = textarea.value;
+            
+            // If no selection, format the whole text
+            if (selectionStart === selectionEnd) {
+                selectionStart = 0;
+                selectionEnd = text.length;
+            }
+            
+            const selectedText = text.substring(selectionStart, selectionEnd);
+            let formattedText = '';
+            
+            for (let i = 0; i < selectedText.length; i++) {
+                const char = selectedText[i];
+                formattedText += styleMaps[style][char] || char;
+            }
+            
+            // Update the text with formatted selection
+            textarea.value = text.substring(0, selectionStart) + 
+                            formattedText + 
+                            text.substring(selectionEnd);
+            
+            // Update the formatted preview
+            document.getElementById('formattedText').textContent = textarea.value;
+            updateCharCount();
+            
+            // Reset selection
+            selectionStart = selectionEnd = 0;
+        }
+
+        // Clear all text
+        function clearText() {
+            document.getElementById('originalText').value = '';
+            document.getElementById('formattedText').textContent = '';
+            document.getElementById('charCount').textContent = '0 characters';
+        }
+
+        // Update character count
+        function updateCharCount() {
+            const text = document.getElementById('originalText').value;
+            document.getElementById('charCount').textContent = `${text.length} characters`;
+        }
+
+        // Copy formatted text to clipboard
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const formattedText = document.getElementById('formattedText').textContent;
+            if (formattedText.trim() === '') {
+                showNotification('Nothing to copy!', 'red');
+                return;
+            }
+            
+            navigator.clipboard.writeText(formattedText).then(() => {
+                showNotification('Copied to clipboard!', 'green');
+            }).catch(err => {
+                showNotification('Failed to copy!', 'red');
+                console.error('Failed to copy text: ', err);
+            });
+        });
+
+        // Show notification
+        function showNotification(message, color) {
+            const notification = document.getElementById('copyNotification');
+            notification.textContent = message;
+            notification.style.color = color === 'green' ? '#059669' : '#DC2626';
+            notification.style.opacity = '1';
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Handle paste event to preserve formatting
+        document.getElementById('originalText').addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+            document.execCommand('insertText', false, text);
+            updateCharCount();
+            document.getElementById('formattedText').textContent = this.value;
+        });
+
+        // Update character count and track selection as user types/interacts
+        document.getElementById('originalText').addEventListener('input', function() {
+            updateCharCount();
+            // Reset selection on input to prevent accidental formatting
+            selectionStart = selectionEnd = 0;
+            document.getElementById('formattedText').textContent = this.value;
+        });
+
+        // Also track mouseup for selection changes
+        document.getElementById('originalText').addEventListener('mouseup', function() {
+            selectionStart = this.selectionStart;
+            selectionEnd = this.selectionEnd;
+        });
+    </script>
+</body>
+</html>
