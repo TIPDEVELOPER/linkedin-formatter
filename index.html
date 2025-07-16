@@ -282,11 +282,14 @@
     updateCharCount();
     selectionStart = selectionEnd = 0;
 }
+//bold+italic
+
 //clearFormatting
-    function clearFormatting() {
+   function clearFormatting() {
     const textarea = document.getElementById('originalText');
     const formatted = textarea.value;
 
+    // Build reverse map from all styles
     const reverseMap = {};
     for (const style of Object.values(styleMaps)) {
         for (const [plain, styled] of Object.entries(style)) {
@@ -294,19 +297,23 @@
         }
     }
 
-    // Also remove combining characters for underline and strikethrough
+    // Step 1: Replace styled characters with plain ones
     let plainText = '';
-    for (let i = 0; i < formatted.length; i++) {
-        const char = formatted[i];
-        // Skip combining characters
-        if (char === '\u0332' || char === '\u0336') continue;
+    for (const char of formatted) {
         plainText += reverseMap[char] || char;
     }
 
+    // Step 2: Remove combining characters like underline (U+0332) and strikethrough (U+0336)
+    plainText = plainText.normalize("NFD").replace(/[\u0332\u0336]/g, "");
+
+    // Step 3: Update input and preview
     textarea.value = plainText;
     document.getElementById('formattedText').textContent = plainText;
+
     updateCharCount();
+    selectionStart = selectionEnd = 0;
 }
+
 
         // Clear all text
         function clearText() {
