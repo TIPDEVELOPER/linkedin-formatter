@@ -126,6 +126,7 @@
                             <i class="fas fa-italic"></i>
                             <span class="tooltiptext">Italic Text</span>
                         </button>
+
                         <!-- Underline -->
                         <button onclick="formatText('underline')" class="format-btn tooltip bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">
                             <i class="fas fa-underline"></i>
@@ -137,15 +138,13 @@
                             <span class="tooltiptext">Strikethrough</span>
                         </button>
     
-                        
-<!-- Clear Formatting -->
-<button onclick="clearFormatting()" class="format-btn tooltip bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-2 px-4 rounded-lg">
-    <i class="fas fa-eraser"></i>
-    <span class="tooltiptext">Clear Formatting</span>
-</button>
+                        <!-- Clear Formatting -->
+                        <button onclick="clearFormatting()" class="format-btn tooltip bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-2 px-4 rounded-lg">
+                            <i class="fas fa-eraser"></i>
+                            <span class="tooltiptext">Clear Formatting</span>
+                        </button>
 
-
-<!-- Clear -->
+                        <!-- Clear -->
                         <button onclick="clearText()" class="format-btn tooltip bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-2 px-4 rounded-lg">
                             <i class="fas fa-trash-alt"></i>
                             <span class="tooltiptext">Clear All</span>
@@ -161,13 +160,20 @@
             <h2 class="text-xl font-bold text-gray-800 mb-4">How to Use</h2>
             <ol class="list-decimal pl-5 space-y-2 text-gray-700">
                 <li>Type or paste your text in the left box</li>
-                <li>Click any formatting button to transform your text</li>
+                <li>Select text and click any formatting button to transform it</li>
+                <li>Use the Bold and Italic buttons together for combined formatting</li>
                 <li>Copy the formatted text from the right box</li>
                 <li>Paste it directly into LinkedIn (or any other platform)</li>
             </ol>
             <div class="mt-4 p-4 bg-blue-50 rounded-lg">
-                <h3 class="font-bold text-blue-800 mb-2">Pro Tip:</h3>
-                <p class="text-blue-700">You can combine multiple formats for unique effects! Try bold + italic for emphasis.</p>
+                <h3 class="font-bold text-blue-800 mb-2">Pro Tips:</h3>
+                <ul class="text-blue-700 space-y-1">
+                    <li>• Select specific text before clicking formatting buttons</li>
+                    <li>• Mix and match: Click Bold + Italic + Underline for triple formatting!</li>
+                    <li>• All formatting buttons work together - combine any styles you want</li>
+                    <li>• Click the same button again to remove that specific formatting</li>
+                    <li>• Clear Formatting removes all styling while keeping your text</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -196,6 +202,15 @@
                 K: '𝘒', L: '𝘓', M: '𝘔', N: '𝘕', O: '𝘖', P: '𝘗', Q: '𝘘', R: '𝘙', S: '𝘚', T: '𝘛', 
                 U: '𝘜', V: '𝘝', W: '𝘞', X: '𝘟', Y: '𝘠', Z: '𝘡'
             },
+            bolditalic: {
+                a: '𝙖', b: '𝙗', c: '𝙘', d: '𝙙', e: '𝙚', f: '𝙛', g: '𝙜', h: '𝙝', i: '𝙞', j: '𝙟', 
+                k: '𝙠', l: '𝙡', m: '𝙢', n: '𝙣', o: '𝙤', p: '𝙥', q: '𝙦', r: '𝙧', s: '𝙨', t: '𝙩', 
+                u: '𝙪', v: '𝙫', w: '𝙬', x: '𝙭', y: '𝙮', z: '𝙯',
+                A: '𝘼', B: '𝘽', C: '𝘾', D: '𝘿', E: '𝙀', F: '𝙁', G: '𝙂', H: '𝙃', I: '𝙄', J: '𝙅', 
+                K: '𝙆', L: '𝙇', M: '𝙈', N: '𝙉', O: '𝙊', P: '𝙋', Q: '𝙌', R: '𝙍', S: '𝙎', T: '𝙏', 
+                U: '𝙐', V: '𝙑', W: '𝙒', X: '𝙓', Y: '𝙔', Z: '𝙕',
+                0: '𝟬', 1: '𝟭', 2: '𝟮', 3: '𝟯', 4: '𝟰', 5: '𝟱', 6: '𝟲', 7: '𝟳', 8: '𝟴', 9: '𝟵'
+            },
             underline: {
                 a: 'a̲', b: 'b̲', c: 'c̲', d: 'd̲', e: 'e̲', f: 'f̲', g: 'g̲', h: 'h̲', i: 'i̲', j: 'j̲', 
                 k: 'k̲', l: 'l̲', m: 'm̲', n: 'n̲', o: 'o̲', p: 'p̲', q: 'q̲', r: 'r̲', s: 's̲', t: 't̲', 
@@ -214,7 +229,6 @@
                 U: 'U̶', V: 'V̶', W: 'W̶', X: 'X̶', Y: 'Y̶', Z: 'Z̶',
                 0: '0̶', 1: '1̶', 2: '2̶', 3: '3̶', 4: '4̶', 5: '5̶', 6: '6̶', 7: '7̶', 8: '8̶', 9: '9̶'
             }
-           
         };
 
         // Track text selection
@@ -228,92 +242,158 @@
 
         // Format selected text based on style
         function formatText(style) {
-    const textarea = document.getElementById('originalText');
-    let text = textarea.value;
+            const textarea = document.getElementById('originalText');
+            let text = textarea.value;
 
-    if (selectionStart === selectionEnd) {
-        selectionStart = 0;
-        selectionEnd = text.length;
-    }
-
-    const selectedText = text.substring(selectionStart, selectionEnd);
-    let formattedText = '';
-
-    const styleMap = styleMaps[style];
-    const reverseMap = {};
-    for (const [plain, styled] of Object.entries(styleMap)) {
-        reverseMap[styled] = plain;
-    }
-
-    // Special handling for underline and strikethrough which use combining characters
-    if (style === 'underline' || style === 'strikethrough') {
-        const combiningChar = style === 'underline' ? '\u0332' : '\u0336';
-        const hasFormatting = selectedText.includes(combiningChar);
-        
-        if (hasFormatting) {
-            // Remove formatting
-            formattedText = selectedText.replace(new RegExp(combiningChar, 'g'), '');
-        } else {
-            // Add formatting
-            for (let char of selectedText) {
-                formattedText += char + combiningChar;
+            // If no selection, format all text
+            if (selectionStart === selectionEnd) {
+                selectionStart = 0;
+                selectionEnd = text.length;
             }
-        }
-    } else {
-        // Handle bold/italic normally
-        const isFormatted = [...selectedText].every(char =>
-            reverseMap[char] || !(char in styleMap) && !(char.toLowerCase() in styleMap)
-        );
 
-        if (isFormatted) {
-            for (let char of selectedText) {
-                formattedText += reverseMap[char] || char;
+            const selectedText = text.substring(selectionStart, selectionEnd);
+            let formattedText = '';
+
+            const reverseMap = {};
+            
+            // Build reverse mapping for all styles to detect existing formatting
+            for (const [styleName, mapping] of Object.entries(styleMaps)) {
+                for (const [plain, styled] of Object.entries(mapping)) {
+                    reverseMap[styled] = plain;
+                }
             }
-        } else {
-            for (let char of selectedText) {
-                formattedText += styleMap[char] || char;
+
+            // Check current formatting state
+            const isBold = [...selectedText].some(char => 
+                styleMaps.bold[reverseMap[char]] === char || styleMaps.bolditalic[reverseMap[char]] === char
+            );
+            const isItalic = [...selectedText].some(char => 
+                styleMaps.italic[reverseMap[char]] === char || styleMaps.bolditalic[reverseMap[char]] === char
+            );
+            const hasUnderline = selectedText.includes('\u0332');
+            const hasStrikethrough = selectedText.includes('\u0336');
+
+            // Handle each formatting type
+            if (style === 'bold') {
+                if (isBold && !isItalic) {
+                    // Remove bold formatting
+                    for (let char of selectedText) {
+                        formattedText += reverseMap[char] || char;
+                    }
+                } else if (!isBold && isItalic) {
+                    // Add bold to italic (make bold+italic)
+                    for (let char of selectedText) {
+                        const plainChar = reverseMap[char] || char;
+                        formattedText += styleMaps.bolditalic[plainChar] || plainChar;
+                    }
+                } else if (isBold && isItalic) {
+                    // Remove bold, keep italic
+                    for (let char of selectedText) {
+                        const plainChar = reverseMap[char] || char;
+                        formattedText += styleMaps.italic[plainChar] || plainChar;
+                    }
+                } else {
+                    // Add bold formatting
+                    for (let char of selectedText) {
+                        const plainChar = reverseMap[char] || char;
+                        formattedText += styleMaps.bold[plainChar] || plainChar;
+                    }
+                }
+            } else if (style === 'italic') {
+                if (!isBold && isItalic) {
+                    // Remove italic formatting
+                    for (let char of selectedText) {
+                        formattedText += reverseMap[char] || char;
+                    }
+                } else if (isBold && !isItalic) {
+                    // Add italic to bold (make bold+italic)
+                    for (let char of selectedText) {
+                        const plainChar = reverseMap[char] || char;
+                        formattedText += styleMaps.bolditalic[plainChar] || plainChar;
+                    }
+                } else if (isBold && isItalic) {
+                    // Remove italic, keep bold
+                    for (let char of selectedText) {
+                        const plainChar = reverseMap[char] || char;
+                        formattedText += styleMaps.bold[plainChar] || plainChar;
+                    }
+                } else {
+                    // Add italic formatting
+                    for (let char of selectedText) {
+                        const plainChar = reverseMap[char] || char;
+                        formattedText += styleMaps.italic[plainChar] || plainChar;
+                    }
+                }
+            } else if (style === 'underline') {
+                if (hasUnderline) {
+                    // Remove underline
+                    formattedText = selectedText.replace(/\u0332/g, '');
+                } else {
+                    // Add underline - preserve existing bold/italic formatting
+                    for (let char of selectedText) {
+                        if (char === '\u0336') {
+                            // Skip strikethrough combining character
+                            formattedText += char;
+                        } else {
+                            formattedText += char + '\u0332';
+                        }
+                    }
+                }
+            } else if (style === 'strikethrough') {
+                if (hasStrikethrough) {
+                    // Remove strikethrough
+                    formattedText = selectedText.replace(/\u0336/g, '');
+                } else {
+                    // Add strikethrough - preserve existing bold/italic formatting
+                    for (let char of selectedText) {
+                        if (char === '\u0332') {
+                            // Skip underline combining character
+                            formattedText += char;
+                        } else {
+                            formattedText += char + '\u0336';
+                        }
+                    }
+                }
             }
+
+            const newText = text.substring(0, selectionStart) + formattedText + text.substring(selectionEnd);
+            textarea.value = newText;
+            document.getElementById('formattedText').textContent = newText;
+            updateCharCount();
+            
+            // Reset selection
+            selectionStart = selectionEnd = 0;
         }
-    }
 
-    const newText = text.substring(0, selectionStart) + formattedText + text.substring(selectionEnd);
-    textarea.value = newText;
-    document.getElementById('formattedText').textContent = newText;
-    updateCharCount();
-    selectionStart = selectionEnd = 0;
-}
-//bold+italic
+        // Clear formatting
+        function clearFormatting() {
+            const textarea = document.getElementById('originalText');
+            const formatted = textarea.value;
 
-//clearFormatting
-   function clearFormatting() {
-    const textarea = document.getElementById('originalText');
-    const formatted = textarea.value;
+            // Build reverse map from all styles
+            const reverseMap = {};
+            for (const style of Object.values(styleMaps)) {
+                for (const [plain, styled] of Object.entries(style)) {
+                    reverseMap[styled] = plain;
+                }
+            }
 
-    // Build reverse map from all styles
-    const reverseMap = {};
-    for (const style of Object.values(styleMaps)) {
-        for (const [plain, styled] of Object.entries(style)) {
-            reverseMap[styled] = plain;
+            // Step 1: Replace styled characters with plain ones
+            let plainText = '';
+            for (const char of formatted) {
+                plainText += reverseMap[char] || char;
+            }
+
+            // Step 2: Remove combining characters like underline (U+0332) and strikethrough (U+0336)
+            plainText = plainText.normalize("NFD").replace(/[\u0332\u0336]/g, "");
+
+            // Step 3: Update input and preview
+            textarea.value = plainText;
+            document.getElementById('formattedText').textContent = plainText;
+
+            updateCharCount();
+            selectionStart = selectionEnd = 0;
         }
-    }
-
-    // Step 1: Replace styled characters with plain ones
-    let plainText = '';
-    for (const char of formatted) {
-        plainText += reverseMap[char] || char;
-    }
-
-    // Step 2: Remove combining characters like underline (U+0332) and strikethrough (U+0336)
-    plainText = plainText.normalize("NFD").replace(/[\u0332\u0336]/g, "");
-
-    // Step 3: Update input and preview
-    textarea.value = plainText;
-    document.getElementById('formattedText').textContent = plainText;
-
-    updateCharCount();
-    selectionStart = selectionEnd = 0;
-}
-
 
         // Clear all text
         function clearText() {
@@ -368,13 +448,16 @@
         // Update character count and track selection as user types/interacts
         document.getElementById('originalText').addEventListener('input', function() {
             updateCharCount();
-            // Reset selection on input to prevent accidental formatting
-            selectionStart = selectionEnd = 0;
             document.getElementById('formattedText').textContent = this.value;
         });
 
-        // Also track mouseup for selection changes
+        // Track mouseup and keyup for selection changes
         document.getElementById('originalText').addEventListener('mouseup', function() {
+            selectionStart = this.selectionStart;
+            selectionEnd = this.selectionEnd;
+        });
+
+        document.getElementById('originalText').addEventListener('keyup', function() {
             selectionStart = this.selectionStart;
             selectionEnd = this.selectionEnd;
         });
